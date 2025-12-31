@@ -20,7 +20,7 @@ const Login = () => {
 
   // Redirect if already logged in
   if (isAuthenticated) {
-    navigate('/');
+    navigate('/dashboard');
     return null;
   }
 
@@ -50,10 +50,10 @@ const Login = () => {
         toast({
           title: isLogin ? 'Welcome back!' : 'Account created!',
           description: isLogin 
-            ? `Logged in as ${trimmedUsername}` 
+            ? `Logged in as ${trimmedUsername}`
             : `Welcome to CarterCloud, ${trimmedUsername}!`,
         });
-        navigate('/');
+        navigate('/dashboard');
       } else {
         toast({
           title: 'Error',
