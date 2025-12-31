@@ -1,13 +1,11 @@
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
-import { LocalUser, AuthState, hashPassword, DEFAULT_USERS } from '@/types/auth';
+import { AuthState } from '@/types/auth';
 
-const USERS_STORAGE_KEY = 'cartercloud_users';
-const AUTH_STORAGE_KEY = 'cartercloud_auth';
+const API_URL = 'http://localhost:3000/api';
 
 interface AuthContextType extends AuthState {
-  login: (username: string, password: string) => { success: boolean; error?: string };
+  login: (username: string, password: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
-  register: (username: string, password: string) => { success: boolean; error?: string };
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -20,118 +18,68 @@ export const useAuth = () => {
   return context;
 };
 
-const getUsers = (): LocalUser[] => {
-  const stored = localStorage.getItem(USERS_STORAGE_KEY);
-  if (stored) {
-    return JSON.parse(stored);
-  }
-  // Initialize with default users
-  localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(DEFAULT_USERS));
-  return DEFAULT_USERS;
-};
-
-const saveUsers = (users: LocalUser[]) => {
-  localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
-};
-
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [authState, setAuthState] = useState<AuthState>({
     isAuthenticated: false,
     currentUser: null,
-    storageLimit: 50 * 1024 * 1024, // Default 50MB
+    storageLimit: 0,
   });
 
-  // Load auth state on mount
+  // Check if we have a session (simplified: just check memory or maybe sessionStorage if we wanted persist)
+  // For now, reload = logout, unless we persist to sessionStorage. Let's strictly follow "check if username is... then let in" from user prompt.
+  // We won't auto-persist for now to keep it extremely simple and secure-ish for a local tool.
+  // Actually, user said "remember them". We should probably persist to localStorage OR rely on the server session.
+  // Given the simplicity, let's just persist "isLoggedIn" in localStorage so refresh doesn't kill it.
+
   useEffect(() => {
-    const stored = localStorage.getItem(AUTH_STORAGE_KEY);
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      const users = getUsers();
-      const user = users.find(u => u.username === parsed.currentUser);
-      if (user) {
-        setAuthState({
-          isAuthenticated: true,
-          currentUser: user.username,
-          storageLimit: user.storageLimit,
-        });
-      }
+    const storedUser = localStorage.getItem('cartercloud_user');
+    if (storedUser) {
+      setAuthState({
+        isAuthenticated: true,
+        currentUser: storedUser,
+        storageLimit: 100 * 1024 * 1024 * 1024 // 100GB dummy limit
+      });
     }
   }, []);
 
-  const login = useCallback((username: string, password: string): { success: boolean; error?: string } => {
-    const users = getUsers();
-    const user = users.find(u => u.username.toLowerCase() === username.toLowerCase());
-    
-    if (!user) {
-      return { success: false, error: 'User not found' };
+  const login = useCallback(async (username: string, password: string): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const res = await fetch(`${API_URL}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        const newState = {
+          isAuthenticated: true,
+          currentUser: data.user.username,
+          storageLimit: data.user.storageLimit,
+        };
+        setAuthState(newState);
+        localStorage.setItem('cartercloud_user', data.user.username);
+        return { success: true };
+      } else {
+        return { success: false, error: 'Incorrect username or password' };
+      }
+    } catch (e) {
+      return { success: false, error: 'Connection to server failed' };
     }
-
-    if (user.passwordHash !== hashPassword(password)) {
-      return { success: false, error: 'Incorrect password' };
-    }
-
-    const newAuthState: AuthState = {
-      isAuthenticated: true,
-      currentUser: user.username,
-      storageLimit: user.storageLimit,
-    };
-
-    setAuthState(newAuthState);
-    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(newAuthState));
-    
-    return { success: true };
   }, []);
 
   const logout = useCallback(() => {
     setAuthState({
       isAuthenticated: false,
       currentUser: null,
-      storageLimit: 50 * 1024 * 1024,
+      storageLimit: 0,
     });
-    localStorage.removeItem(AUTH_STORAGE_KEY);
-  }, []);
-
-  const register = useCallback((username: string, password: string): { success: boolean; error?: string } => {
-    if (username.length < 3) {
-      return { success: false, error: 'Username must be at least 3 characters' };
-    }
-
-    if (password.length < 6) {
-      return { success: false, error: 'Password must be at least 6 characters' };
-    }
-
-    const users = getUsers();
-    const existingUser = users.find(u => u.username.toLowerCase() === username.toLowerCase());
-    
-    if (existingUser) {
-      return { success: false, error: 'Username already taken' };
-    }
-
-    const newUser: LocalUser = {
-      username,
-      passwordHash: hashPassword(password),
-      storageLimit: 50 * 1024 * 1024, // 50MB for new users
-      createdAt: Date.now(),
-    };
-
-    users.push(newUser);
-    saveUsers(users);
-
-    // Auto login after registration
-    const newAuthState: AuthState = {
-      isAuthenticated: true,
-      currentUser: newUser.username,
-      storageLimit: newUser.storageLimit,
-    };
-
-    setAuthState(newAuthState);
-    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(newAuthState));
-    
-    return { success: true };
+    localStorage.removeItem('cartercloud_user');
   }, []);
 
   return (
-    <AuthContext.Provider value={{ ...authState, login, logout, register }}>
+    <AuthContext.Provider value={{ ...authState, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

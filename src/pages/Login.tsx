@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Cloud, User, Lock, LogIn, UserPlus, Eye, EyeOff } from 'lucide-react';
+import { Cloud, User, Lock, LogIn, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -8,13 +8,13 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 
 const Login = () => {
-  const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { login, register, isAuthenticated } = useAuth();
+  // login now returns Promise<{ success, error }> so we can await it
+  const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -41,28 +41,31 @@ const Login = () => {
       return;
     }
 
-    setTimeout(() => {
-      const result = isLogin 
-        ? login(trimmedUsername, trimmedPassword)
-        : register(trimmedUsername, trimmedPassword);
+    try {
+      const result = await login(trimmedUsername, trimmedPassword);
 
       if (result.success) {
         toast({
-          title: isLogin ? 'Welcome back!' : 'Account created!',
-          description: isLogin 
-            ? `Logged in as ${trimmedUsername}`
-            : `Welcome to CarterCloud, ${trimmedUsername}!`,
+          title: 'Welcome back!',
+          description: `Logged in as ${trimmedUsername}`,
         });
         navigate('/dashboard');
       } else {
         toast({
           title: 'Error',
-          description: result.error || 'An error occurred',
+          description: result.error || 'Authentication failed',
           variant: 'destructive',
         });
       }
+    } catch (e) {
+      toast({
+        title: 'Error',
+        description: 'Could not connect to server',
+        variant: 'destructive',
+      });
+    } finally {
       setIsLoading(false);
-    }, 500);
+    }
   };
 
   return (
@@ -90,23 +93,8 @@ const Login = () => {
 
         {/* Auth Card */}
         <div className="glass rounded-2xl p-8 shadow-xl">
-          <div className="flex gap-2 mb-6">
-            <Button
-              variant={isLogin ? 'default' : 'ghost'}
-              className="flex-1"
-              onClick={() => setIsLogin(true)}
-            >
-              <LogIn className="w-4 h-4 mr-2" />
-              Sign In
-            </Button>
-            <Button
-              variant={!isLogin ? 'default' : 'ghost'}
-              className="flex-1"
-              onClick={() => setIsLogin(false)}
-            >
-              <UserPlus className="w-4 h-4 mr-2" />
-              Sign Up
-            </Button>
+          <div className="mb-6 text-center">
+            <h2 className="text-xl font-semibold">Sign In</h2>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -137,7 +125,7 @@ const Login = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="pl-10 pr-10 bg-secondary/50 border-border/50"
-                  autoComplete={isLogin ? 'current-password' : 'new-password'}
+                  autoComplete="current-password"
                 />
                 <button
                   type="button"
@@ -149,30 +137,24 @@ const Login = () => {
               </div>
             </div>
 
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               className="w-full mt-6"
               disabled={isLoading}
             >
               {isLoading ? (
                 <span className="flex items-center gap-2">
                   <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
-                  {isLogin ? 'Signing in...' : 'Creating account...'}
+                  SignIn in...
                 </span>
               ) : (
                 <>
-                  {isLogin ? <LogIn className="w-4 h-4 mr-2" /> : <UserPlus className="w-4 h-4 mr-2" />}
-                  {isLogin ? 'Sign In' : 'Create Account'}
+                  <LogIn className="w-4 h-4 mr-2" />
+                  Sign In
                 </>
               )}
             </Button>
           </form>
-
-          {!isLogin && (
-            <p className="text-xs text-muted-foreground text-center mt-4">
-              New accounts get 50MB of storage. Contact admin for more space.
-            </p>
-          )}
         </div>
       </div>
     </div>
