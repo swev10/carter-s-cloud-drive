@@ -1,16 +1,21 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { UploadZone } from '@/components/UploadZone';
 import { FileCard } from '@/components/FileCard';
 import { StorageIndicator } from '@/components/StorageIndicator';
 import { EmptyState } from '@/components/EmptyState';
 import { useFileStorage } from '@/hooks/useFileStorage';
+import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isUploading, setIsUploading] = useState(false);
+  
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   
   const { 
     files, 
@@ -22,6 +27,13 @@ const Index = () => {
   } = useFileStorage();
   
   const { toast } = useToast();
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      navigate('/login');
+    }
+  }, [isAuthenticated, isLoading, navigate]);
 
   const filteredFiles = useMemo(() => {
     if (!searchQuery.trim()) return files;
@@ -75,7 +87,7 @@ const Index = () => {
 
   const storageUsage = getStorageUsage();
 
-  if (isLoading) {
+  if (isLoading || !isAuthenticated) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">

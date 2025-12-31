@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { StoredFile } from '@/types/file';
+import { useAuth } from '@/contexts/AuthContext';
 
 const STORAGE_KEY = 'cartercloud_files';
-const MAX_STORAGE_MB = 50; // localStorage limit is ~5-10MB, but we'll set a reasonable limit
 
 export const useFileStorage = () => {
+  const { currentUser, storageLimit } = useAuth();
   const [files, setFiles] = useState<StoredFile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [totalSize, setTotalSize] = useState(0);
@@ -90,7 +91,7 @@ export const useFileStorage = () => {
   }, []);
 
   const getStorageUsage = useCallback(() => {
-    const maxBytes = MAX_STORAGE_MB * 1024 * 1024;
+    const maxBytes = storageLimit;
     const percentage = Math.min((totalSize / maxBytes) * 100, 100);
     return {
       used: totalSize,
