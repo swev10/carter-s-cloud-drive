@@ -6,6 +6,14 @@ export interface StoredFile {
   data: string; // base64 encoded
   createdAt: number;
   updatedAt: number;
+  folderId: string | null; // null means root
+}
+
+export interface Folder {
+  id: string;
+  name: string;
+  parentId: string | null; // null means root
+  createdAt: number;
 }
 
 export type FileType = 'image' | 'video' | 'audio' | 'document' | 'archive' | 'code' | 'other';
