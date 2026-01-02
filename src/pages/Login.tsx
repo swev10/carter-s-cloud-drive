@@ -183,11 +183,6 @@ const Login = () => {
           </Tabs>
         </div>
 
-        {/* Globe showing server location */}
-        <div className="mt-8 flex flex-col items-center">
-          <p className="text-sm text-muted-foreground mb-4">Cloud Server Location</p>
-          <Globe />
-        </div>
       </div>
     </div>
   );

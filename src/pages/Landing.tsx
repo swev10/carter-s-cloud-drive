@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useEffect, useRef } from 'react';
 import { 
   Cloud, 
   Zap, 
@@ -6,11 +7,11 @@ import {
   HardDrive, 
   ArrowRight, 
   Check,
-  Globe,
   Lock,
   Gauge
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import Globe from '@/components/Globe';
 
 const features = [
   {
@@ -29,7 +30,7 @@ const features = [
     description: 'Your files are encrypted and stored locally. No third-party access.',
   },
   {
-    icon: Globe,
+    icon: Cloud,
     title: 'Access Anywhere',
     description: 'Access your files from any device with an internet connection.',
   },
@@ -43,6 +44,26 @@ const stats = [
 ];
 
 const Landing = () => {
+  const observerRef = useRef<IntersectionObserver | null>(null);
+
+  useEffect(() => {
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate-in');
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+    );
+
+    const elements = document.querySelectorAll('.scroll-animate');
+    elements.forEach((el) => observerRef.current?.observe(el));
+
+    return () => observerRef.current?.disconnect();
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
       {/* Background Effects */}
@@ -59,7 +80,7 @@ const Landing = () => {
             <div className="flex items-center gap-3">
               <div className="relative">
                 <div className="absolute inset-0 bg-primary blur-lg opacity-50" />
-                <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg">
+                <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg">
                   <Cloud className="w-5 h-5 text-primary-foreground" />
                 </div>
               </div>
@@ -87,23 +108,23 @@ const Landing = () => {
       <section className="relative z-10 pt-24 pb-32">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-8">
+            <div className="scroll-animate opacity-0 translate-y-8 transition-all duration-700 ease-out [&.animate-in]:opacity-100 [&.animate-in]:translate-y-0 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-8">
               <Zap className="w-4 h-4" />
               Now with 10TB storage per user
             </div>
             
-            <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6">
+            <h1 className="scroll-animate opacity-0 translate-y-8 transition-all duration-700 delay-100 ease-out [&.animate-in]:opacity-100 [&.animate-in]:translate-y-0 text-5xl md:text-7xl font-bold tracking-tight mb-6">
               Your Personal
               <br />
               <span className="gradient-text">Cloud Storage</span>
             </h1>
             
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
+            <p className="scroll-animate opacity-0 translate-y-8 transition-all duration-700 delay-200 ease-out [&.animate-in]:opacity-100 [&.animate-in]:translate-y-0 text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
               Store, organize, and access all your files in one secure place. 
               Lightning-fast uploads, military-grade encryption, and 10TB of space.
             </p>
             
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="scroll-animate opacity-0 translate-y-8 transition-all duration-700 delay-300 ease-out [&.animate-in]:opacity-100 [&.animate-in]:translate-y-0 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link to="/login">
                 <Button size="lg" className="gap-2 text-lg px-8 h-14 glow">
                   Start Free
@@ -126,7 +147,11 @@ const Landing = () => {
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
-              <div key={index} className="text-center">
+              <div 
+                key={index} 
+                className={`scroll-animate opacity-0 translate-y-8 transition-all duration-700 ease-out [&.animate-in]:opacity-100 [&.animate-in]:translate-y-0 text-center`}
+                style={{ transitionDelay: `${index * 100}ms` }}
+              >
                 <div className="text-3xl md:text-4xl font-bold gradient-text mb-2">
                   {stat.value}
                 </div>
@@ -140,7 +165,7 @@ const Landing = () => {
       {/* Features Section */}
       <section className="relative z-10 py-24">
         <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
+          <div className="scroll-animate opacity-0 translate-y-8 transition-all duration-700 ease-out [&.animate-in]:opacity-100 [&.animate-in]:translate-y-0 text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               Everything you need
             </h2>
@@ -153,7 +178,8 @@ const Landing = () => {
             {features.map((feature, index) => (
               <div 
                 key={index}
-                className="p-6 rounded-2xl bg-card border border-border/50 hover:border-primary/30 transition-all duration-300 group"
+                className={`scroll-animate opacity-0 translate-y-8 transition-all duration-700 ease-out [&.animate-in]:opacity-100 [&.animate-in]:translate-y-0 p-6 rounded-2xl bg-card border border-border/50 hover:border-primary/30 hover:scale-105 transition-all duration-300 group`}
+                style={{ transitionDelay: `${index * 100}ms` }}
               >
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                   <feature.icon className="w-6 h-6 text-primary" />
@@ -166,11 +192,54 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Speed Section */}
-      <section className="relative z-10 py-24 bg-card/30 border-y border-border/50">
+      {/* Server Location Section with Globe */}
+      <section className="relative z-10 py-24 border-y border-border/50 bg-card/30">
         <div className="container mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
+            <div className="scroll-animate opacity-0 -translate-x-8 transition-all duration-700 ease-out [&.animate-in]:opacity-100 [&.animate-in]:translate-x-0">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 text-accent text-sm font-medium mb-6">
+                <Cloud className="w-4 h-4" />
+                Global Infrastructure
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6">
+                Your data, 
+                <br />
+                <span className="gradient-text">securely hosted</span>
+              </h2>
+              <p className="text-lg text-muted-foreground mb-8">
+                Our servers are located in New York, providing lightning-fast access 
+                with enterprise-grade security. Your files never leave our secure 
+                infrastructure.
+              </p>
+              <ul className="space-y-3">
+                {[
+                  'Enterprise-grade data centers',
+                  '24/7 monitoring and security',
+                  'Redundant backup systems',
+                  'GDPR compliant storage',
+                ].map((item, index) => (
+                  <li key={index} className="flex items-center gap-3 text-muted-foreground">
+                    <div className="w-5 h-5 rounded-full bg-accent/20 flex items-center justify-center">
+                      <Check className="w-3 h-3 text-accent" />
+                    </div>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            
+            <div className="scroll-animate opacity-0 translate-x-8 transition-all duration-700 delay-200 ease-out [&.animate-in]:opacity-100 [&.animate-in]:translate-x-0 flex justify-center">
+              <Globe />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Speed Section */}
+      <section className="relative z-10 py-24">
+        <div className="container mx-auto px-6">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="scroll-animate opacity-0 -translate-x-8 transition-all duration-700 ease-out [&.animate-in]:opacity-100 [&.animate-in]:translate-x-0">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
                 <Gauge className="w-4 h-4" />
                 Blazing Fast
@@ -202,7 +271,7 @@ const Landing = () => {
               </ul>
             </div>
             
-            <div className="relative">
+            <div className="scroll-animate opacity-0 translate-x-8 transition-all duration-700 delay-200 ease-out [&.animate-in]:opacity-100 [&.animate-in]:translate-x-0 relative">
               <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full" />
               <div className="relative glass rounded-2xl p-8">
                 <div className="space-y-4">
@@ -235,9 +304,9 @@ const Landing = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="relative z-10 py-24">
+      <section className="relative z-10 py-24 border-t border-border/50 bg-card/30">
         <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto text-center">
+          <div className="scroll-animate opacity-0 scale-95 transition-all duration-700 ease-out [&.animate-in]:opacity-100 [&.animate-in]:scale-100 max-w-4xl mx-auto text-center">
             <h2 className="text-3xl md:text-5xl font-bold mb-6">
               Ready to get started?
             </h2>
