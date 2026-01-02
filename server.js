@@ -214,6 +214,12 @@ const server = createServer(async (req, res) => {
             return;
         }
 
+        // API: Health Check
+        if (path === "/api/health" && req.method === "GET") {
+            sendJSON({ status: "ok", mongo: mongoose.connection.readyState === 1 ? "connected" : "connecting" });
+            return;
+        }
+
     } catch (e) {
         console.error(e);
         sendJSON({ error: "Internal Server Error" }, 500);
@@ -224,6 +230,6 @@ const server = createServer(async (req, res) => {
     res.end("Not Found");
 });
 
-server.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+server.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on http://0.0.0.0:${PORT}`);
 });
