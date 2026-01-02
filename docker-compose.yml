@@ -12,10 +12,7 @@ services:
   tunnel:
     image: cloudflare/cloudflared:latest
     restart: always
-    # QUICK TUNNEL (Random URL every time)
-    # This exposes the 'backend' service on port 3000 to the internet.
-    command: tunnel --url http://backend:3000
-    # PERMANENT TUNNEL (Uncomment and use this instead for a fixed URL)
-    # environment:
-    #   - TUNNEL_TOKEN=your-tunnel-token-here
-    # command: tunnel run
+    # Permanent Tunnel (Token provided by user)
+    environment:
+      - TUNNEL_TOKEN=eyJhIjoiNjIzOGZiN2RjMjk2M2NmYmRmMWMzNDFlNDQzN2QwZiIsInQiOiI1OTliNmExZi0yNDZjLTQ2ZTgtYTA4Yi05YmYyZDdmYzViZTEiLCJzIjoiT0RNaE16ZzFOR0l0WlRkaU15MDBZakkxTFdKaFlUTXRPQ2hhTVRjME5qRmtZVFkxIn0
+    command: tunnel run
