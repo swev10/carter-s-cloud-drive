@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
     storageLimit: { type: Number, default: 100 * 1024 * 1024 * 1024 } // 100GB
 });
 
-const User = mongoose.model('User', userSchema);
+const CarterUser = mongoose.model('CarterUser', userSchema);
 
 // Seed Users
 const seedUsers = async () => {
@@ -39,10 +39,10 @@ const seedUsers = async () => {
     ];
 
     for (const u of users) {
-        const exists = await User.findOne({ username: u.username });
+        const exists = await CarterUser.findOne({ username: u.username });
         if (!exists) {
             const hashedPassword = await bcrypt.hash(u.password, 10);
-            await User.create({ ...u, password: hashedPassword });
+            await CarterUser.create({ ...u, password: hashedPassword });
             console.log(`Seeded user: ${u.username}`);
         }
     }
@@ -111,7 +111,7 @@ const server = createServer(async (req, res) => {
             const body = await readBody();
             const { username, password } = body;
 
-            const user = await User.findOne({ username });
+            const user = await CarterUser.findOne({ username });
             if (user && await bcrypt.compare(password, user.password)) {
                 sendJSON({
                     success: true,
