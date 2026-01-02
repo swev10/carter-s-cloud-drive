@@ -7,7 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import Globe from '@/components/Globe';
+import Particles from '@/components/Particles';
+import DiscordBanner from '@/components/DiscordBanner';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -70,12 +71,16 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-6">
-      {/* Background decoration */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-3xl animate-pulse-glow" />
-        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-accent/10 rounded-full blur-3xl" />
-      </div>
+    <div className="min-h-screen bg-background flex flex-col">
+      <Particles />
+      <DiscordBanner />
+      
+      <div className="flex-1 flex items-center justify-center p-6">
+        {/* Background decoration */}
+        <div className="fixed inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-3xl animate-pulse-glow" />
+          <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-accent/10 rounded-full blur-3xl" />
+        </div>
 
       <div className="relative w-full max-w-md">
         {/* Logo */}
@@ -173,7 +178,7 @@ const Login = () => {
                 <Button
                   variant="outline"
                   className="w-full border-accent/50 hover:bg-accent/10 hover:border-accent"
-                  onClick={() => window.open('https://discord.gg/lovable-dev', '_blank')}
+                  onClick={() => window.open('https://discord.gg/MXcQVkPQ', '_blank')}
                 >
                   <MessageCircle className="w-4 h-4 mr-2" />
                   Join Discord to Request Access
@@ -183,6 +188,7 @@ const Login = () => {
           </Tabs>
         </div>
 
+        </div>
       </div>
     </div>
   );

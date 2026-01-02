@@ -12,6 +12,8 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Globe from '@/components/Globe';
+import Particles from '@/components/Particles';
+import DiscordBanner from '@/components/DiscordBanner';
 
 const features = [
   {
@@ -66,12 +68,16 @@ const Landing = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Particles />
+      
       {/* Background Effects */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-primary/10 rounded-full blur-[120px]" />
         <div className="absolute bottom-0 left-1/4 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px]" />
         <div className="absolute top-1/3 right-0 w-[400px] h-[400px] bg-accent/5 rounded-full blur-[80px]" />
       </div>
+
+      <DiscordBanner />
 
       {/* Header */}
       <header className="relative z-10 border-b border-border/50 backdrop-blur-xl bg-background/80">
