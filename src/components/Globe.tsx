@@ -123,7 +123,7 @@ const Globe = () => {
           20
         );
         glowGradient.addColorStop(0, 'hsl(320, 80%, 60%)');
-        glowGradient.addColorStop(0.3, 'hsl(320, 80%, 50% / 0.5)');
+        glowGradient.addColorStop(0.3, 'hsla(320, 80%, 50%, 0.5)');
         glowGradient.addColorStop(1, 'transparent');
 
         ctx.beginPath();
@@ -163,7 +163,7 @@ const Globe = () => {
       <canvas
         ref={canvasRef}
         className="drop-shadow-lg"
-        style={{ filter: 'drop-shadow(0 0 20px hsl(280, 85%, 60% / 0.3))' }}
+        style={{ filter: 'drop-shadow(0 0 20px hsla(280, 85%, 60%, 0.3))' }}
       />
       <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
         <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
