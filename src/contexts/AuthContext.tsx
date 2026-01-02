@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { AuthState } from '@/types/auth';
 
-const API_URL = 'http://localhost:3000/api';
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 interface AuthContextType extends AuthState {
   login: (username: string, password: string) => Promise<{ success: boolean; error?: string }>;

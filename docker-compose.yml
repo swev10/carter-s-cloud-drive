@@ -1,0 +1,21 @@
+version: '3'
+services:
+  backend:
+    build: .
+    volumes:
+      # Persist the storage directory (uploads and data.json)
+      - ./backend_data:/app/storage
+    restart: always
+    # Mac/Ubuntu compatibility: Ensure default user can write to mapped volume if issues arise
+    # user: "1000:1000" 
+
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    restart: always
+    # QUICK TUNNEL (Random URL every time)
+    # This exposes the 'backend' service on port 3000 to the internet.
+    command: tunnel --url http://backend:3000
+    # PERMANENT TUNNEL (Uncomment and use this instead for a fixed URL)
+    # environment:
+    #   - TUNNEL_TOKEN=your-tunnel-token-here
+    # command: tunnel run
