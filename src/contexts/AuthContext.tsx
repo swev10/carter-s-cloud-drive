@@ -70,7 +70,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return { success: false, error: data.error || 'Incorrect username or password' };
       }
     } catch (e) {
-      return { success: false, error: 'Connection to server failed' };
+      console.error('Login Error:', e);
+      return { success: false, error: `Connection failed: ${e instanceof Error ? e.message : String(e)}` };
     }
   }, []);
 
