@@ -14,5 +14,5 @@ services:
     restart: always
     # Permanent Tunnel (Token provided by user)
     environment:
-      - TUNNEL_TOKEN=eyJhIjoiNjIzOGZiN2RjMjk2M2NmZmJkZjFjZDQxZTQ0ZjdkMGYiLCJ0IjoiNTk5YjZhMWYtMjQ2Yy00NmU4LWEwOGItOWJmMmQ3ZmM1YmUxIiwicyI6Ik9ETmhNemcxTkdJdFpUZGlNeTAwWWpKakxXSmhZVE10T0daaE1UYzBOakZrWVRZMSJ9
+      - TUNNEL_TOKEN=eyJhIjoiNjIzOGZiN2RjMjk2M2NmZmJkZjFjZDQxZTQ0ZjdkMGYiLCJ0IjoiMDY0MzY0MDEtYjRhYy00MzEyLWExZGEtMzRlMTZkNWVjZTZkIiwicyI6Ik1qY3pOR05rTnpVdE0ySmxZaTAwTW1GaExXSmhZVFV0TTJZd09UWTVOek14TXpZeCJ9
     command: tunnel run
