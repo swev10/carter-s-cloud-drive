@@ -2,6 +2,8 @@ import { createServer } from 'http';
 import { join, dirname } from 'path';
 import { existsSync, mkdirSync, readdirSync, statSync, unlinkSync, writeFileSync, readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
+import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -9,6 +11,40 @@ const __dirname = dirname(__filename);
 const PORT = 3000;
 const UPLOADS_DIR = join(process.cwd(), "uploads");
 const META_FILE = join(process.cwd(), "data.json");
+const MONGO_URI = "mongodb+srv://swevmc_main:QcsccRRab5s9d2k2@cluster0.mndo8.mongodb.net/swevmc_main?retryWrites=true&w=majority&appName=Cluster0";
+
+// MongoDB Connection
+mongoose.connect(MONGO_URI)
+    .then(() => console.log("MongoDB Connected"))
+    .catch(err => console.error("MongoDB Connection Error:", err));
+
+// User Schema
+const userSchema = new mongoose.Schema({
+    username: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    role: { type: String, enum: ['admin', 'member'], default: 'member' },
+    storageLimit: { type: Number, default: 100 * 1024 * 1024 * 1024 } // 100GB
+});
+
+const User = mongoose.model('User', userSchema);
+
+// Seed Users
+const seedUsers = async () => {
+    const users = [
+        { username: "carte1", password: "HelloAiden@273!", role: "admin" },
+        { username: "jordan05", password: "HelloJordan!23@@$%", role: "member" }
+    ];
+
+    for (const u of users) {
+        const exists = await User.findOne({ username: u.username });
+        if (!exists) {
+            const hashedPassword = await bcrypt.hash(u.password, 10);
+            await User.create({ ...u, password: hashedPassword });
+            console.log(`Seeded user: ${u.username}`);
+        }
+    }
+};
+seedUsers();
 
 // Ensure uploads directory exists
 if (!existsSync(UPLOADS_DIR)) {
@@ -72,10 +108,18 @@ const server = createServer(async (req, res) => {
             const body = await readBody();
             const { username, password } = body;
 
-            if (username === "carte1" && password === "C@rter!23") {
-                sendJSON({ success: true, user: { username: "carte1", storageLimit: 100 * 1024 * 1024 * 1024 } });
+            const user = await User.findOne({ username });
+            if (user && await bcrypt.compare(password, user.password)) {
+                sendJSON({
+                    success: true,
+                    user: {
+                        username: user.username,
+                        role: user.role,
+                        storageLimit: user.storageLimit
+                    }
+                });
             } else {
-                sendJSON({ success: false, error: "Incorrect" }, 401);
+                sendJSON({ success: false, error: "Invalid username or password" }, 401);
             }
             return;
         }

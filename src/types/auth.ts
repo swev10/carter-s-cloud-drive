@@ -8,6 +8,7 @@ export interface LocalUser {
 export interface AuthState {
   isAuthenticated: boolean;
   currentUser: string | null;
+  role: 'admin' | 'member' | null;
   storageLimit: number;
 }
 

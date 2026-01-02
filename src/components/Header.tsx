@@ -18,7 +18,7 @@ interface HeaderProps {
 }
 
 export const Header = ({ searchQuery, onSearchChange, fileCount }: HeaderProps) => {
-  const { currentUser, storageLimit, logout } = useAuth();
+  const { currentUser, role, storageLimit, logout } = useAuth();
 
   return (
     <header className="sticky top-0 z-50 glass border-b border-border/50">
@@ -67,12 +67,18 @@ export const Header = ({ searchQuery, onSearchChange, fileCount }: HeaderProps) 
                   <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
                     <User className="w-4 h-4 text-primary" />
                   </div>
-                  <span className="hidden sm:inline font-medium">{currentUser}</span>
+                  <div className="flex flex-col items-start leading-none">
+                    <span className="hidden sm:inline font-medium">{currentUser}</span>
+                    <span className="hidden sm:inline text-[10px] uppercase text-muted-foreground font-bold tracking-wider">{role}</span>
+                  </div>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
                 <div className="px-2 py-2">
-                  <p className="text-sm font-medium">{currentUser}</p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-medium">{currentUser}</p>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-secondary text-secondary-foreground font-bold uppercase">{role}</span>
+                  </div>
                   <p className="text-xs text-muted-foreground">
                     {formatFileSize(storageLimit)} storage
                   </p>

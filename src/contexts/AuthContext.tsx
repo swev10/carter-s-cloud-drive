@@ -22,6 +22,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [authState, setAuthState] = useState<AuthState>({
     isAuthenticated: false,
     currentUser: null,
+    role: null,
     storageLimit: 0,
   });
 
@@ -33,10 +34,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const storedUser = localStorage.getItem('cartercloud_user');
+    const storedRole = localStorage.getItem('cartercloud_role') as 'admin' | 'member' | null;
     if (storedUser) {
       setAuthState({
         isAuthenticated: true,
         currentUser: storedUser,
+        role: storedRole || 'member',
         storageLimit: 100 * 1024 * 1024 * 1024 // 100GB dummy limit
       });
     }
@@ -53,16 +56,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const data = await res.json();
 
       if (data.success) {
-        const newState = {
+        const newState: AuthState = {
           isAuthenticated: true,
           currentUser: data.user.username,
+          role: data.user.role,
           storageLimit: data.user.storageLimit,
         };
         setAuthState(newState);
         localStorage.setItem('cartercloud_user', data.user.username);
+        localStorage.setItem('cartercloud_role', data.user.role);
         return { success: true };
       } else {
-        return { success: false, error: 'Incorrect username or password' };
+        return { success: false, error: data.error || 'Incorrect username or password' };
       }
     } catch (e) {
       return { success: false, error: 'Connection to server failed' };
@@ -73,9 +78,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setAuthState({
       isAuthenticated: false,
       currentUser: null,
+      role: null,
       storageLimit: 0,
     });
     localStorage.removeItem('cartercloud_user');
+    localStorage.removeItem('cartercloud_role');
   }, []);
 
   return (
