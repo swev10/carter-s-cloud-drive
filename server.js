@@ -73,6 +73,9 @@ const saveMetadata = () => {
 };
 
 const server = createServer(async (req, res) => {
+    // Log every request
+    console.log(`[${req.method}] ${req.url}`);
+
     // CORS
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
