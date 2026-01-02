@@ -6,6 +6,8 @@ services:
       # Persist the storage directory (uploads and data.json)
       - ./backend_data:/app/storage
     restart: always
+    environment:
+      - MONGO_URI=${MONGO_URI}
     # Mac/Ubuntu compatibility: Ensure default user can write to mapped volume if issues arise
     # user: "1000:1000" 
 

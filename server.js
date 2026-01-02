@@ -4,6 +4,9 @@ import { existsSync, mkdirSync, readdirSync, statSync, unlinkSync, writeFileSync
 import { fileURLToPath } from 'url';
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -11,7 +14,7 @@ const __dirname = dirname(__filename);
 const PORT = 3000;
 const UPLOADS_DIR = join(process.cwd(), "uploads");
 const META_FILE = join(process.cwd(), "data.json");
-const MONGO_URI = "mongodb+srv://swevmc_main:QcsccRRab5s9d2k2@cluster0.mndo8.mongodb.net/swevmc_main?retryWrites=true&w=majority&appName=Cluster0";
+const MONGO_URI = process.env.MONGO_URI;
 
 // MongoDB Connection
 mongoose.connect(MONGO_URI)
