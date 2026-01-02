@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { Cloud, Search, LogOut, User } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -25,20 +26,22 @@ export const Header = ({ searchQuery, onSearchChange, fileCount }: HeaderProps) 
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between gap-6">
           {/* Logo */}
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <div className="absolute inset-0 bg-primary blur-lg opacity-50 animate-pulse-glow" />
-              <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg">
-                <Cloud className="w-5 h-5 text-primary-foreground" />
+          <Link to="/home" className="hover:opacity-80 transition-opacity">
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <div className="absolute inset-0 bg-primary blur-lg opacity-50 animate-pulse-glow" />
+                <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg">
+                  <Cloud className="w-5 h-5 text-primary-foreground" />
+                </div>
+              </div>
+              <div>
+                <h1 className="text-xl font-bold tracking-tight">
+                  <span className="gradient-text">Carter</span>Cloud
+                </h1>
+                <p className="text-xs text-muted-foreground">Personal Storage</p>
               </div>
             </div>
-            <div>
-              <h1 className="text-xl font-bold tracking-tight">
-                <span className="gradient-text">Carter</span>Cloud
-              </h1>
-              <p className="text-xs text-muted-foreground">Personal Storage</p>
-            </div>
-          </div>
+          </Link>
 
           {/* Search */}
           <div className="flex-1 max-w-md">

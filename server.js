@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     role: { type: String, enum: ['admin', 'member'], default: 'member' },
-    storageLimit: { type: Number, default: 100 * 1024 * 1024 * 1024 } // 100GB
+    storageLimit: { type: Number, default: 500 * 1024 * 1024 * 1024 } // 500GB
 });
 
 const CarterUser = mongoose.model('CarterUser', userSchema);

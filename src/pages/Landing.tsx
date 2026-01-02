@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useRef } from 'react';
-import { 
-  Cloud, 
-  Zap, 
-  Shield, 
-  HardDrive, 
-  ArrowRight, 
+import {
+  Cloud,
+  Zap,
+  Shield,
+  HardDrive,
+  ArrowRight,
   Check,
   Lock,
   Gauge
@@ -18,7 +18,7 @@ import DiscordBanner from '@/components/DiscordBanner';
 const features = [
   {
     icon: HardDrive,
-    title: '10TB Storage',
+    title: '500GB Storage',
     description: 'Massive storage space for all your files, documents, and media.',
   },
   {
@@ -39,7 +39,7 @@ const features = [
 ];
 
 const stats = [
-  { value: '10TB', label: 'Storage per user' },
+  { value: '500GB', label: 'Storage per user' },
   { value: '99.9%', label: 'Uptime guaranteed' },
   { value: '< 50ms', label: 'Response time' },
   { value: '256-bit', label: 'Encryption' },
@@ -69,7 +69,7 @@ const Landing = () => {
   return (
     <div className="min-h-screen bg-background">
       <Particles />
-      
+
       {/* Background Effects */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-primary/10 rounded-full blur-[120px]" />
@@ -83,18 +83,20 @@ const Landing = () => {
       <header className="relative z-10 border-b border-border/50 backdrop-blur-xl bg-background/80">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <div className="absolute inset-0 bg-primary blur-lg opacity-50" />
-                <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg">
-                  <Cloud className="w-5 h-5 text-primary-foreground" />
+            <Link to="/home" className="hover:opacity-80 transition-opacity">
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-primary blur-lg opacity-50" />
+                  <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg">
+                    <Cloud className="w-5 h-5 text-primary-foreground" />
+                  </div>
                 </div>
+                <span className="text-xl font-bold tracking-tight">
+                  <span className="gradient-text">Carter</span>Cloud
+                </span>
               </div>
-              <span className="text-xl font-bold tracking-tight">
-                <span className="gradient-text">Carter</span>Cloud
-              </span>
-            </div>
-            
+            </Link>
+
             <div className="flex items-center gap-4">
               <Link to="/login">
                 <Button variant="ghost">Sign In</Button>
@@ -116,20 +118,20 @@ const Landing = () => {
           <div className="max-w-4xl mx-auto text-center">
             <div className="scroll-animate opacity-0 translate-y-8 transition-all duration-700 ease-out [&.animate-in]:opacity-100 [&.animate-in]:translate-y-0 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-8">
               <Zap className="w-4 h-4" />
-              Now with 10TB storage per user
+              Now with 500GB storage per user
             </div>
-            
+
             <h1 className="scroll-animate opacity-0 translate-y-8 transition-all duration-700 delay-100 ease-out [&.animate-in]:opacity-100 [&.animate-in]:translate-y-0 text-5xl md:text-7xl font-bold tracking-tight mb-6">
               Your Personal
               <br />
               <span className="gradient-text">Cloud Storage</span>
             </h1>
-            
+
             <p className="scroll-animate opacity-0 translate-y-8 transition-all duration-700 delay-200 ease-out [&.animate-in]:opacity-100 [&.animate-in]:translate-y-0 text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
-              Store, organize, and access all your files in one secure place. 
-              Lightning-fast uploads, military-grade encryption, and 10TB of space.
+              Store, organize, and access all your files in one secure place.
+              Lightning-fast uploads, military-grade encryption, and 500GB of space.
             </p>
-            
+
             <div className="scroll-animate opacity-0 translate-y-8 transition-all duration-700 delay-300 ease-out [&.animate-in]:opacity-100 [&.animate-in]:translate-y-0 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link to="/login">
                 <Button size="lg" className="gap-2 text-lg px-8 h-14 glow">
@@ -153,8 +155,8 @@ const Landing = () => {
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className={`scroll-animate opacity-0 translate-y-8 transition-all duration-700 ease-out [&.animate-in]:opacity-100 [&.animate-in]:translate-y-0 text-center`}
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
@@ -179,10 +181,10 @@ const Landing = () => {
               Powerful features designed to make file management effortless
             </p>
           </div>
-          
+
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {features.map((feature, index) => (
-              <div 
+              <div
                 key={index}
                 className={`scroll-animate opacity-0 translate-y-8 transition-all duration-700 ease-out [&.animate-in]:opacity-100 [&.animate-in]:translate-y-0 p-6 rounded-2xl bg-card border border-border/50 hover:border-primary/30 hover:scale-105 transition-all duration-300 group`}
                 style={{ transitionDelay: `${index * 100}ms` }}
@@ -208,13 +210,13 @@ const Landing = () => {
                 Global Infrastructure
               </div>
               <h2 className="text-3xl md:text-4xl font-bold mb-6">
-                Your data, 
+                Your data,
                 <br />
                 <span className="gradient-text">securely hosted</span>
               </h2>
               <p className="text-lg text-muted-foreground mb-8">
-                Our servers are located in New York, providing lightning-fast access 
-                with enterprise-grade security. Your files never leave our secure 
+                Our servers are located in New York, providing lightning-fast access
+                with enterprise-grade security. Your files never leave our secure
                 infrastructure.
               </p>
               <ul className="space-y-3">
@@ -233,7 +235,7 @@ const Landing = () => {
                 ))}
               </ul>
             </div>
-            
+
             <div className="scroll-animate opacity-0 translate-x-8 transition-all duration-700 delay-200 ease-out [&.animate-in]:opacity-100 [&.animate-in]:translate-x-0 flex justify-center">
               <Globe />
             </div>
@@ -256,8 +258,8 @@ const Landing = () => {
                 <span className="gradient-text">speed of light</span>
               </h2>
               <p className="text-lg text-muted-foreground mb-8">
-                Our infrastructure is optimized for speed. Upload gigabytes in minutes, 
-                not hours. With local storage optimization and smart caching, your files 
+                Our infrastructure is optimized for speed. Upload gigabytes in minutes,
+                not hours. With local storage optimization and smart caching, your files
                 are always ready when you need them.
               </p>
               <ul className="space-y-3">
@@ -276,7 +278,7 @@ const Landing = () => {
                 ))}
               </ul>
             </div>
-            
+
             <div className="scroll-animate opacity-0 translate-x-8 transition-all duration-700 delay-200 ease-out [&.animate-in]:opacity-100 [&.animate-in]:translate-x-0 relative">
               <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full" />
               <div className="relative glass rounded-2xl p-8">
@@ -304,6 +306,112 @@ const Landing = () => {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      {/* Pricing Section */}
+      <section className="relative z-10 py-24 border-t border-border/50">
+        <div className="container mx-auto px-6">
+          <div className="scroll-animate opacity-0 translate-y-8 transition-all duration-700 ease-out [&.animate-in]:opacity-100 [&.animate-in]:translate-y-0 text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-bold mb-4">
+              Simple, <span className="gradient-text">Transparent</span> Pricing
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Choose the perfect plan for your storage needs.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {/* Free Plan */}
+            <div className="scroll-animate opacity-0 translate-y-8 transition-all duration-700 delay-100 ease-out [&.animate-in]:opacity-100 [&.animate-in]:translate-y-0 p-8 rounded-3xl bg-card/50 border border-border/50 flex flex-col hover:border-primary/30 transition-all group">
+              <div className="mb-8">
+                <h3 className="text-xl font-bold mb-2">Free</h3>
+                <p className="text-muted-foreground text-sm">Perfect to get started</p>
+              </div>
+              <div className="mb-8">
+                <span className="text-4xl font-bold">$0</span>
+                <span className="text-muted-foreground">/mo</span>
+              </div>
+              <ul className="space-y-4 mb-8 flex-1">
+                {[
+                  '500GB Secure Storage',
+                  'Standard Upload Speed',
+                  'Basic Support',
+                  'Core Features',
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3 text-sm text-muted-foreground">
+                    <Check className="w-4 h-4 text-primary" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Link to="/login">
+                <Button variant="outline" className="w-full">Get Started</Button>
+              </Link>
+            </div>
+
+            {/* Premium Plan */}
+            <div className="scroll-animate opacity-0 translate-y-8 transition-all duration-700 delay-200 ease-out [&.animate-in]:opacity-100 [&.animate-in]:translate-y-0 p-8 rounded-3xl bg-primary/5 border-2 border-primary relative flex flex-col hover:scale-105 transition-all shadow-2xl">
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-primary text-primary-foreground text-xs font-bold uppercase tracking-widest">
+                Recommended
+              </div>
+              <div className="mb-8">
+                <h3 className="text-xl font-bold mb-2">Premium</h3>
+                <p className="text-primary/70 text-sm">For power users</p>
+              </div>
+              <div className="mb-8">
+                <span className="text-4xl font-bold">$4.99</span>
+                <span className="text-muted-foreground">/mo</span>
+              </div>
+              <ul className="space-y-4 mb-8 flex-1">
+                {[
+                  '1TB Secure Storage',
+                  'Priority Upload Speed',
+                  'Premium Support',
+                  'Advanced Features',
+                  'Early Beta Access',
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3 text-sm italic">
+                    <Check className="w-4 h-4 text-primary" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Link to="/login">
+                <Button className="w-full glow">Upgrade Now</Button>
+              </Link>
+            </div>
+
+            {/* Max Plan */}
+            <div className="scroll-animate opacity-0 translate-y-8 transition-all duration-700 delay-300 ease-out [&.animate-in]:opacity-100 [&.animate-in]:translate-y-0 p-8 rounded-3xl bg-card/50 border border-border/50 flex flex-col hover:border-accent/30 transition-all group">
+              <div className="mb-8">
+                <h3 className="text-xl font-bold mb-2">Max</h3>
+                <p className="text-muted-foreground text-sm">Unlimited potential</p>
+              </div>
+              <div className="mb-8">
+                <span className="text-4xl font-bold">$7.99</span>
+                <span className="text-muted-foreground">/mo</span>
+              </div>
+              <ul className="space-y-4 mb-8 flex-1">
+                {[
+                  '2TB Secure Storage',
+                  'Maximum Link Speed',
+                  '24/7 VIP Support',
+                  'Enterprise Features',
+                  'Custom Branding',
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3 text-sm text-muted-foreground">
+                    <Check className="w-4 h-4 text-accent" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Link to="/login">
+                <Button variant="outline" className="w-full border-accent/50 hover:bg-accent/10">Go Max</Button>
+              </Link>
             </div>
           </div>
         </div>
