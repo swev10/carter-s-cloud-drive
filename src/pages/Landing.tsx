@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import Globe from '@/components/Globe';
 import Particles from '@/components/Particles';
 import DiscordBanner from '@/components/DiscordBanner';
+import DiscordWidget from '@/components/DiscordWidget';
 
 const features = [
   {
@@ -380,9 +381,12 @@ const Landing = () => {
                   </li>
                 ))}
               </ul>
-              <Link to="/login">
-                <Button className="w-full glow">Upgrade Now</Button>
-              </Link>
+              <Button
+                onClick={() => window.open('https://discord.gg/MXcQVkPQ', '_blank')}
+                className="w-full glow"
+              >
+                Upgrade Now
+              </Button>
             </div>
 
             {/* Max Plan */}
@@ -409,9 +413,13 @@ const Landing = () => {
                   </li>
                 ))}
               </ul>
-              <Link to="/login">
-                <Button variant="outline" className="w-full border-accent/50 hover:bg-accent/10">Go Max</Button>
-              </Link>
+              <Button
+                onClick={() => window.open('https://discord.gg/MXcQVkPQ', '_blank')}
+                variant="outline"
+                className="w-full border-accent/50 hover:bg-accent/10"
+              >
+                Go Max
+              </Button>
             </div>
           </div>
         </div>
@@ -451,6 +459,7 @@ const Landing = () => {
           </div>
         </div>
       </footer>
+      <DiscordWidget />
     </div>
   );
 };
