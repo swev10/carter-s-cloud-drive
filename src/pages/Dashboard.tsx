@@ -8,6 +8,7 @@ import { StorageIndicator } from '@/components/StorageIndicator';
 import { EmptyState } from '@/components/EmptyState';
 import { BreadcrumbNav } from '@/components/BreadcrumbNav';
 import { CreateFolderDialog } from '@/components/CreateFolderDialog';
+import { DirectDownloadDialog } from '@/components/DirectDownloadDialog';
 import { useFileStorage } from '@/hooks/useFileStorage';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -16,26 +17,27 @@ import { Loader2 } from 'lucide-react';
 const Dashboard = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isUploading, setIsUploading] = useState(false);
-  
+
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  
-  const { 
+
+  const {
     files,
-    isLoading, 
-    uploadFile, 
+    isLoading,
+    uploadFile,
     createFolder,
-    deleteFile, 
+    deleteFile,
     deleteFolder,
-    downloadFile, 
+    downloadFile,
     navigateToFolder,
     getBreadcrumbs,
     getCurrentFiles,
     getCurrentFolders,
     getStorageUsage,
     currentFolderId,
+    fetchFromUrl,
   } = useFileStorage();
-  
+
   const { toast } = useToast();
 
   // Redirect to login if not authenticated
@@ -52,7 +54,7 @@ const Dashboard = () => {
   const filteredFiles = useMemo(() => {
     if (!searchQuery.trim()) return currentFiles;
     const query = searchQuery.toLowerCase();
-    return currentFiles.filter(file => 
+    return currentFiles.filter(file =>
       file.name.toLowerCase().includes(query)
     );
   }, [currentFiles, searchQuery]);
@@ -60,14 +62,14 @@ const Dashboard = () => {
   const filteredFolders = useMemo(() => {
     if (!searchQuery.trim()) return currentFolders;
     const query = searchQuery.toLowerCase();
-    return currentFolders.filter(folder => 
+    return currentFolders.filter(folder =>
       folder.name.toLowerCase().includes(query)
     );
   }, [currentFolders, searchQuery]);
 
   const handleFilesSelected = useCallback(async (selectedFiles: File[]) => {
     setIsUploading(true);
-    
+
     let successCount = 0;
     let errorCount = 0;
 
@@ -106,6 +108,23 @@ const Dashboard = () => {
       description: `"${name}" has been created.`,
     });
   }, [createFolder, toast]);
+
+  const handleDirectDownload = useCallback(async (url: string) => {
+    try {
+      await fetchFromUrl(url);
+      toast({
+        title: 'Download complete',
+        description: 'File has been downloaded to your storage.',
+      });
+    } catch (error) {
+      toast({
+        title: 'Download failed',
+        description: 'Could not fetch the file from the URL.',
+        variant: 'destructive',
+      });
+      throw error; // Re-throw for dialog to handle state
+    }
+  }, [fetchFromUrl, toast]);
 
   const handleDeleteFile = useCallback((fileId: string) => {
     deleteFile(fileId);
@@ -146,7 +165,7 @@ const Dashboard = () => {
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
       </div>
 
-      <Header 
+      <Header
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         fileCount={files.length}
@@ -157,18 +176,19 @@ const Dashboard = () => {
           {/* Main Content */}
           <div className="space-y-6">
             {/* Upload Zone */}
-            <UploadZone 
+            <UploadZone
               onFilesSelected={handleFilesSelected}
               isUploading={isUploading}
             />
 
             {/* Navigation & Actions */}
             <div className="flex items-center justify-between gap-4 flex-wrap">
-              <BreadcrumbNav 
+              <BreadcrumbNav
                 breadcrumbs={breadcrumbs}
                 onNavigate={navigateToFolder}
               />
               <CreateFolderDialog onCreate={handleCreateFolder} />
+              <DirectDownloadDialog onDownload={handleDirectDownload} />
             </div>
 
             {/* Files Section */}
@@ -212,7 +232,7 @@ const Dashboard = () => {
           {/* Sidebar */}
           <aside className="space-y-6">
             <StorageIndicator {...storageUsage} />
-            
+
             {/* Quick Tips */}
             <div className="p-4 rounded-xl bg-card border border-border/50">
               <h3 className="text-sm font-medium text-foreground mb-3">Quick Tips</h3>

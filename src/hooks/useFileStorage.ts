@@ -247,6 +247,33 @@ export const useFileStorage = () => {
     };
   }, [totalSize, storageLimit]);
 
+
+  const fetchFromUrl = useCallback(async (url: string) => {
+    try {
+      const res = await fetch(`${API_URL}/fetch-url`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url, folderId: currentFolderId })
+      });
+
+      if (!res.ok) throw new Error('Download failed');
+
+      const downloadedFile = await res.json();
+
+      // Re-attach download URL for UI
+      downloadedFile.data = `${API_URL}/files/${downloadedFile.id}`;
+
+      const updatedFiles = [downloadedFile, ...files];
+      setFiles(updatedFiles);
+      setTotalSize(prev => prev + downloadedFile.size);
+
+      return downloadedFile;
+    } catch (error) {
+      console.error('Fetch URL failed:', error);
+      throw error;
+    }
+  }, [files, currentFolderId]);
+
   return {
     files,
     folders,
@@ -257,6 +284,7 @@ export const useFileStorage = () => {
     deleteFile,
     deleteFolder,
     downloadFile,
+    fetchFromUrl,
     navigateToFolder,
     getBreadcrumbs,
     getCurrentFiles,

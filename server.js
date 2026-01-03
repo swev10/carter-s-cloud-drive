@@ -221,6 +221,67 @@ const server = createServer(async (req, res) => {
             return;
         }
 
+
+        // API: Fetch from URL
+        if (path === "/api/fetch-url" && req.method === "POST") {
+            const body = await readBody();
+            const { url, folderId } = body;
+
+            if (!url) {
+                sendJSON({ error: "Missing URL" }, 400);
+                return;
+            }
+
+            try {
+                const fetchRes = await fetch(url);
+                if (!fetchRes.ok) {
+                    throw new Error(`Failed to fetch URL: ${fetchRes.statusText}`);
+                }
+
+                // Determine filename
+                let filename = "downloaded_file";
+                const disposition = fetchRes.headers.get('content-disposition');
+                if (disposition && disposition.includes('filename=')) {
+                    filename = disposition.split('filename=')[1].replace(/['"]/g, '');
+                } else {
+                    const urlPath = new URL(url).pathname;
+                    const possibleName = urlPath.split('/').pop();
+                    if (possibleName) filename = possibleName;
+                }
+
+                const contentType = fetchRes.headers.get('content-type') || 'application/octet-stream';
+
+                const buffer = await fetchRes.arrayBuffer();
+                const bufferData = Buffer.from(buffer);
+
+                const now = Date.now();
+                const id = `file_${now}_${Math.random().toString(36).substr(2, 9)}`;
+                const filePath = join(UPLOADS_DIR, id);
+
+                writeFileSync(filePath, bufferData);
+
+                const newFile = {
+                    id,
+                    name: filename,
+                    size: bufferData.length,
+                    type: contentType,
+                    data: '',
+                    createdAt: now,
+                    updatedAt: now,
+                    folderId: folderId || null
+                };
+
+                metadata.files.push(newFile);
+                saveMetadata();
+
+                sendJSON(newFile);
+            } catch (e) {
+                console.error("Fetch URL error", e);
+                sendJSON({ error: "Failed to download file from URL" }, 500);
+            }
+            return;
+        }
+
         // API: Health Check
         if (path === "/api/health" && req.method === "GET") {
             sendJSON({ status: "ok", mongo: mongoose.connection.readyState === 1 ? "connected" : "connecting" });
